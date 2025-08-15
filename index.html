@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectify Zone</title>
+<style>
+    /* === GLOBAL RESET === */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: black;
+        color: white;
+        overflow-x: hidden;
+    }
+
+    /* === STARFIELD BACKGROUND === */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(ellipse at bottom, #0d1a26 0%, #000 100%);
+        z-index: -2;
+    }
+    canvas#stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+
+    /* === HEADER === */
+    header {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+    }
+    header img {
+        height: 60px;
+        margin-right: 15px;
+    }
+    header h1 {
+        font-size: 1.8rem;
+        color: #00e5ff;
+    }
+    header h1 span {
+        color: #ff00a8;
+    }
+    header p {
+        font-size: 1rem;
+        color: #ff00a8;
+        font-style: italic;
+    }
+
+    /* === SECTIONS === */
+    section {
+        padding: 50px 15%;
+        animation: fadeInUp 1s ease forwards;
+    }
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        color: #ff00a8;
+    }
+    ul {
+        list-style: none;
+    }
+    ul li::before {
+        content: "•";
+        color: #00e5ff;
+        margin-right: 10px;
+    }
+    ul li {
+        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+    p {
+        margin-bottom: 15px;
+    }
+
+    /* === BUTTON === */
+    .btn {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #00e5ff;
+        color: black;
+        font-weight: bold;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .btn:hover {
+        background: #ff00a8;
+        color: white;
+    }
+
+    /* === FOOTER === */
+    footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 0.9rem;
+        background: rgba(0,0,0,0.7);
+    }
+
+    /* === ANIMATIONS === */
+    @keyframes fadeInUp {
+        from {opacity: 0; transform: translateY(30px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+        section {
+            padding: 30px 10%;
+        }
+        header {
+            flex-direction: column;
+            text-align: center;
+        }
+        header img {
+            margin-bottom: 10px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<header>
+    <img src="logo.jpg" alt="Projectify Zone Logo">
+    <div>
+        <h1>PROJECT<span>IFY</span> Z<span>ONE</span> </h1>
+        <p>Turning your ideas into reality</p>
+    </div>
+</header>
+
+<section>
+    <h2>About Us</h2>
+    <p>At Projectify Zone, we are specialize in assisting college students to
+       transform their project ideas into real-life applications at reasonable
+       prices. Our dedicated team is committed to providing the necessary
+       support and resources to ensure your project's success.</p>
+</section>
+
+<section>
+    <h2>We Are Specialized In</h2>
+    <ul>
+        <li>Custom Electronics & IoT Solutions</li>
+        <li>Embedded System Development</li>
+        <li>Software & App Development</li>
+        <li>Automation and Robotics</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Features of Projectify Zone</h2>
+    <ul>
+        <li>Innovative approach to every project</li>
+        <li>Expert engineering and design team</li>
+        <li>Customer-focused development</li>
+        <li>Timely delivery with quality assurance</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Registration</h2>
+    <p>Be part of the innovation movement. Register today and start your journey with Projectify Zone.</p>
+    <a href="https://forms.gle/QDNKKc8QvhYjbJha7" class="btn">Register Now</a>
+    <p style="margin-top:20px; font-style:italic; color:#ff00a8;">"Innovation starts with a single click – Let's build the future together!"</p>
+</section>
+
+<section>
+    <h2>Contact Us</h2>
+    <p>Email: <a style="color:#00e5ff;"> projectifyzone@gmail.com </a></p>
+    <p>Phone: <a style="color:#00e5ff;"> +91 9019772174 </a></p>
+    <p>Address: <a style="color:#00e5ff;"> Bengaluru, Karnataka</p>
+</section>
+
+<footer>
+    &copy; 2025 Projectify Zone. All Rights Reserved.
+</footer>
+
+<script>
+/* === STARFIELD ANIMATION === */
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let stars = [], count = 200;
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+for (let i = 0; i < count; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5,
+        d: Math.random() * count
+    });
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    for (let i = 0; i < count; i++) {
+        let s = stars[i];
+        ctx.moveTo(s.x, s.y);
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
+    }
+    ctx.fill();
+    update();
+}
+
+let angle = 0;
+function update() {
+    angle += 0.01;
+    for (let i = 0; i < count; i++) {
+        let s = stars[i];
+        s.y += Math.cos(angle + s.d) + 1;
+        s.x += Math.sin(angle) * 0.5;
+
+        if (s.x > canvas.width + 5 || s.x < -5 || s.y > canvas.height) {
+            stars[i] = {x: Math.random() * canvas.width, y: -10, r: s.r, d: s.d};
+        }
+    }
+}
+
+setInterval(draw, 33);
+</script>
+</body>
+</html>
