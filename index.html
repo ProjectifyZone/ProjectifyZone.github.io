@@ -1,244 +1,402 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projectify Zone</title>
-<link rel="icon" type="image/png" href="logo.jpg">
-<style>
-    /* === GLOBAL RESET === */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: black;
-        color: white;
-        overflow-x: hidden;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Projectify Zone — engineering & design support for student projects, embedded systems, IoT and robotics." />
+  <title>Projectify Zone — Services & Registration</title>
+  <link rel="icon" type="image/png" href="logo.jpg">
+
+  <style>
+    /* ===== Reset & base ===== */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background:#f5f7fb;
+      color:#052034;
+      line-height:1.45;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
     }
 
-    /* === STARFIELD BACKGROUND === */
-    body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(ellipse at bottom, #0d1a26 0%, #000 100%);
-        z-index: -2;
+    /* skip link for accessibility */
+    .skip-link{
+      position: absolute;
+      left: -999px;
+      top: auto;
+      background:#005b9f;
+      color:#fff;
+      padding:8px 12px;
+      z-index:100;
     }
-    canvas#stars {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: -1;
+    .skip-link:focus{left:12px;top:12px;border-radius:6px}
+
+    /* subtle starfield as background (low-contrast for official look) */
+    body::before{
+      content:"";
+      position:fixed;inset:0;
+      background: radial-gradient(ellipse at bottom, rgba(5,32,52,0.03) 0%, rgba(2,8,23,0.02) 50%, transparent 100%);
+      z-index:-3;
+    }
+    canvas#stars{position:fixed;inset:0;z-index:-2;opacity:0.35;pointer-events:none}
+
+    /* ===== layout ===== */
+    header.site-header{
+      background:linear-gradient(90deg, #e9f3ff 0%, #f6fbff 100%);
+      border-bottom:1px solid rgba(5,32,52,0.06);
+      padding:16px 6%;
+      display:flex;
+      align-items:center;
+      gap:18px;
+      position:sticky;
+      top:0;
+      z-index:50;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;
+    }
+    .brand img{height:56px;width:56px;border-radius:8px;object-fit:cover}
+    .brand h1{font-size:1.1rem;font-weight:700;color:#023a5a;letter-spacing:0.6px}
+    .brand p{font-size:0.85rem;color:#065a85;margin-top:2px}
+
+    nav.site-nav{margin-left:auto;display:flex;gap:10px;align-items:center}
+    .nav-link{padding:8px 12px;border-radius:6px;font-weight:600;color:#023a5a;text-decoration:none}
+    .nav-link:hover{background:rgba(2,58,90,0.06)}
+    .cta{background:#005b9f;color:#fff;padding:10px 14px;border-radius:6px;text-decoration:none;font-weight:700}
+    .cta:hover{opacity:0.95}
+
+    main{max-width:1200px;margin:28px auto;padding:0 6%}
+
+    /* hero */
+    .hero{
+      display:grid;
+      grid-template-columns:1fr 420px;
+      gap:32px;
+      align-items:center;
+      margin-bottom:30px;
+    }
+    .hero-card{
+      background:#fff;border-radius:12px;padding:30px;box-shadow:0 8px 30px rgba(5,32,52,0.06);
+      border:1px solid rgba(5,32,52,0.03)
     }
 
-    /* === HEADER === */
-    header {
-        display: flex;
-        align-items: center;
-        padding: 20px;
-    }
-    header img {
-        height: 60px;
-        margin-right: 15px;
-    }
-    header h1 {
-        font-size: 1.8rem;
-        color: #00e5ff;
-    }
-    header h1 span {
-        color: #ff00a8;
-    }
-    header p {
-        font-size: 1rem;
-        color: #ff00a8;
-        font-style: italic;
+    /* removed the previous kicker; keep subtle label area that is colorized but accessible */
+    .hero-flag{
+      display:inline-block;padding:6px 10px;border-radius:6px;font-weight:700;
+      background:#eef8ff;color:#005b9f;margin-bottom:12px;font-size:0.92rem;
     }
 
-    /* === SECTIONS === */
-    section {
-        padding: 50px 15%;
-        animation: fadeInUp 1s ease forwards;
-    }
-    h2 {
-        font-size: 1.8rem;
-        margin-bottom: 20px;
-        color: #ff00a8;
-    }
-    ul {
-        list-style: none;
-    }
-    ul li::before {
-        content: "•";
-        color: #00e5ff;
-        margin-right: 10px;
-    }
-    ul li {
-        margin-bottom: 10px;
-        font-size: 1rem;
-    }
-    p {
-        margin-bottom: 15px;
+    .hero h2{font-size:1.8rem;color:#022a3a;margin-bottom:12px}
+    .hero p.lead{color:#184c63;margin-bottom:18px}
+    .quick-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .quick-actions a{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;text-decoration:none;border:1px solid rgba(3,59,90,0.06);background:#f8fbff;color:#023a5a;font-weight:600}
+
+    /* right column: announcement + search */
+    .announcement{background:#fff;padding:18px;border-radius:10px;border-left:4px solid #ffb703}
+    .announcement h3{font-size:1rem;margin-bottom:8px;color:#0b3b57}
+    .announcement p{font-size:0.95rem;color:#224a63}
+    .search-box{display:flex;margin-top:12px;gap:8px}
+    .search-box input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid rgba(3,59,90,0.08)}
+    .search-box button{padding:10px 12px;border-radius:8px;border:none;background:#005b9f;color:#fff;font-weight:700}
+
+    /* services grid */
+    .services{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:22px 0}
+    .service{background:#fff;padding:18px;border-radius:10px;border:1px solid rgba(5,32,52,0.03);box-shadow:0 6px 18px rgba(5,32,52,0.03)}
+    .service h4{font-size:1.02rem;margin-bottom:8px;color:#032f45}
+    .service p{font-size:0.92rem;color:#2c5870}
+
+    /* info columns */
+    .columns{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+    .card{background:#fff;padding:18px;border-radius:10px;border:1px solid rgba(5,32,52,0.03)}
+    .card h3{margin-bottom:8px;color:#032f45}
+    .card ul{list-style:none;padding-left:0;margin-top:8px}
+    .card li{margin-bottom:8px;color:#284d64}
+
+    /* contact & footer */
+    .contact-form{display:grid;gap:8px}
+    .contact-form input,.contact-form textarea{padding:10px;border-radius:8px;border:1px solid rgba(3,59,90,0.08);width:100%}
+    .btn-primary{background:#005b9f;color:#fff;padding:10px 14px;border-radius:8px;border:none;font-weight:700}
+    footer.site-footer{margin-top:28px;background:#022a3a;color:#fff;padding:28px 6%;display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
+    footer .col{flex:1;min-width:200px}
+    footer a{color:rgba(255,255,255,0.95);text-decoration:none}
+    .small{font-size:0.9rem;color:rgba(255,255,255,0.9)}
+
+    /* ensure small text in cards (not footer) is readable (dark color) */
+    .card .small{color:#2c5870}
+
+    /* responsive */
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr}
+      header.site-header{padding:12px 4%}
+      main{padding:0 4%}
+      .columns{grid-template-columns:1fr}
     }
 
-    /* === BUTTON === */
-    .btn {
-        display: inline-block;
-        padding: 12px 25px;
-        background: #00e5ff;
-        color: black;
-        font-weight: bold;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-    .btn:hover {
-        background: #ff00a8;
-        color: white;
+    @media (max-width:520px){
+      .brand h1{font-size:1rem}
+      .nav-link{display:none}
+      .cta{padding:8px 10px}
     }
 
-    /* === FOOTER === */
-    footer {
-        text-align: center;
-        padding: 20px;
-        font-size: 0.9rem;
-        background: rgba(0,0,0,0.7);
-    }
-
-    /* === ANIMATIONS === */
-    @keyframes fadeInUp {
-        from {opacity: 0; transform: translateY(30px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
-
-    /* === RESPONSIVE === */
-    @media (max-width: 768px) {
-        section {
-            padding: 30px 10%;
-        }
-        header {
-            flex-direction: column;
-            text-align: center;
-        }
-        header img {
-            margin-bottom: 10px;
-        }
-    }
-</style>
+    /* helper: subtle focus outline for keyboard nav */
+    a:focus, button:focus, input:focus, textarea:focus { outline: 3px solid rgba(0,91,159,0.15); outline-offset:3px; }
+  </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+  <canvas id="stars" aria-hidden="true"></canvas>
 
-<canvas id="stars"></canvas>
+  <header class="site-header" role="banner" aria-label="Top header">
+    <a href="#" class="brand" aria-label="Projectify Zone home">
+      <img src="logo.jpg" alt="Projectify Zone logo">
+      <div>
+        <h1>Projectify <span style="color:#0077b6">Zone</span></h1>
+        <p style="font-size:0.78rem;margin-top:4px">Empowering local innovation</p>
+      </div>
+    </a>
 
-<header>
-    <img src="logo.jpg" alt="Projectify Zone Logo">
-    <div>
-        <h1>PROJECT<span>IFY</span> Z<span>ONE</span> </h1>
-        <p>Turning your ideas into reality</p>
+    <nav class="site-nav" role="navigation" aria-label="Main navigation">
+      <a class="nav-link" href="#about">About</a>
+      <a class="nav-link" href="#services">Services</a>
+      <a class="nav-link" href="#register">Register</a>
+      <a class="nav-link" href="#contact">Contact</a>
+      <a class="cta" href="https://forms.gle/QDNKKc8QvhYjbJha7" target="_blank" rel="noopener">Apply Now</a>
+    </nav>
+  </header>
+
+  <main id="main-content" role="main">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-card">
+        <!-- kicker removed per request (no "Official • Provincial") -->
+        <h2 id="hero-heading">Services for students, startups and local innovators</h2>
+        <p class="lead">Projectify Zone connects college teams and local innovators with engineering & design support to turn ideas into real projects — at transparent pricing.</p>
+
+        <div class="quick-actions" aria-hidden="false">
+          <a href="#register">Register a Project</a>
+          <a href="#services">View Services</a>
+          <a href="#contact">Get Support</a>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:12px;align-items:center">
+          <div style="flex:1">
+            <strong style="display:block;font-size:0.95rem;color:#023a5a">Office Hours</strong>
+            <!-- made color explicit and readable -->
+            <span class="small" style="color:#2c5870">Mon–Fri: 09:30–18:00</span>
+          </div>
+          <div style="text-align:right">
+            <small class="small" style="color:#2c5870">Helpline</small>
+            <div style="font-weight:700;color:#023a5a">+91 9986652218</div>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="announcement" role="region" aria-label="Important announcement">
+          <h3>Announcement</h3>
+          <p>Registration open for the Summer 2025 cohort. Priority support for community-focused projects.</p>
+
+          <div class="search-box" role="search" aria-label="Search services">
+            <input type="search" aria-label="Search site" placeholder="Search services, guides, or projects">
+            <button aria-label="Search">Search</button>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:#fff;padding:12px;border-radius:10px;border:1px solid rgba(5,32,52,0.03)">
+          <h4 style="margin-bottom:8px;color:#032f45">Quick links</h4>
+          <ul style="list-style:none;padding-left:0">
+            <li style="margin-bottom:8px"><a href="#guides">Project Guides</a></li>
+            <li style="margin-bottom:8px"><a href="#funding">Funding Support</a></li>
+            <li style="margin-bottom:8px"><a href="#partners">Industry Partners</a></li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" aria-labelledby="services-heading">
+      <h2 id="services-heading" style="margin-bottom:12px">Core Services</h2>
+      <div class="services" role="list">
+        <article class="service" role="listitem" aria-labelledby="s1">
+          <h4 id="s1">Custom Electronics & IoT</h4>
+          <p>Design, PCB prototyping, firmware & cloud integration tailored to student projects and small-scale pilots.</p>
+        </article>
+
+        <article class="service" role="listitem" aria-labelledby="s2">
+          <h4 id="s2">Embedded System Development</h4>
+          <p>Microcontroller & real-time systems, sensor interfaces and power management consulting.</p>
+        </article>
+
+        <article class="service" role="listitem" aria-labelledby="s3">
+          <h4 id="s3">Software & App Development</h4>
+          <p>Full-stack apps, mobile prototypes, and deployment guidance for academic use-cases.</p>
+        </article>
+
+        <article class="service" role="listitem" aria-labelledby="s4">
+          <h4 id="s4">Automation & Robotics</h4>
+          <p>Robotics kits, control firmware, and assistance with competitions & demonstrators.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- TWO COLUMNS: GUIDES / REGISTER -->
+    <section class="columns" aria-label="Guides and registration">
+      <div class="card" id="guides" aria-labelledby="guides-h">
+        <h3 id="guides-h">Project Guides</h3>
+        <!-- made text explicit, readable and concise -->
+        <p class="small">Practical guides and templates to help you move from idea to prototype.</p>
+        <ul>
+          <li>How to plan your semester project</li>
+          <li>Budget & components checklist</li>
+          <li>Submission & evaluation process</li>
+        </ul>
+      </div>
+
+      <div class="card" id="register" aria-labelledby="reg-h">
+        <h3 id="reg-h">Register your project</h3>
+        <p class="small">Fast-track registration with priority review for community-focused projects.</p>
+        <p style="margin-top:8px"><a class="cta" href="https://forms.gle/QDNKKc8QvhYjbJha7" target="_blank" rel="noopener">Register Now</a></p>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(5,32,52,0.04)">
+
+        <h4 style="margin-bottom:8px;color:#032f45">Funding assistance</h4>
+        <!-- reworded to be short and clear -->
+        <p class="small">We help eligible teams access small grants and industry mentorship opportunities.</p>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" style="margin-top:20px" aria-labelledby="contact-h">
+      <div class="card" aria-labelledby="contact-h">
+        <h3 id="contact-h">Contact & Support</h3>
+        <p class="small">Email, phone or visit our local office in Bengaluru.</p>
+
+        <div style="display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:12px">
+          <!-- PRODUCTION-FRIENDLY FORM:
+               Replace 'YOUR_FORMSPREE_ENDPOINT' with your actual Formspree endpoint,
+               or set action="mailto:projectifyzone@gmail.com" if you want simple mailto behavior.
+               Formspree example: action="https://formspree.io/f/XXXXXXX" method="POST"
+          -->
+          <form class="contact-form" action="YOUR_FORMSPREE_ENDPOINT" method="POST" aria-label="Contact form">
+            <!-- honeypot (anti-spam) -->
+            <input type="text" name="_gotcha" style="display:none">
+            <input type="text" name="name" placeholder="Full name" aria-label="Full name" required>
+            <input type="email" name="email" placeholder="Email" aria-label="Email address" required>
+            <input type="tel" name="phone" placeholder="Phone (optional)" aria-label="Phone number">
+            <textarea name="message" rows="4" placeholder="Brief message or project idea" aria-label="Message" required></textarea>
+
+            <!-- optional: redirect or subject -->
+            <input type="hidden" name="_subject" value="New project inquiry from website">
+            <!-- If using Formspree and you want to redirect to thank-you.html, add: name="_redirect" value="/thank-you.html" -->
+
+            <button class="btn-primary" type="submit">Send message</button>
+            <noscript><p style="color:#a00;margin-top:8px">JavaScript is disabled — the form will still submit but you may want to enable JS for a smoother experience.</p></noscript>
+          </form>
+
+          <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start">
+            <div>
+              <strong>Office</strong>
+              <div class="small" style="color:#2c5870">Bengaluru, Karnataka</div>
+            </div>
+            <div>
+              <strong>Phone</strong>
+              <div class="small" style="color:#2c5870">+91 9986652218</div>
+            </div>
+            <div>
+              <strong>Email</strong>
+              <div class="small" style="color:#2c5870"><a href="mailto:projectifyzone@gmail.com">projectifyzone@gmail.com</a></div>
+            </div>
+
+            <!-- placeholder for map or directions -->
+            <div style="width:100%;background:#f4f8fb;border-radius:8px;padding:10px;border:1px solid rgba(5,32,52,0.03)">
+              <small class="small" style="color:#2c5870">Map & directions (embed your map here)</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo" aria-label="Footer">
+    <div class="col">
+      <img src="logo.jpg" alt="logo" style="height:44px;border-radius:6px;display:block;margin-bottom:12px">
+      <div class="small">Projectify Zone — Supporting student-led innovations and community projects.</div>
     </div>
-</header>
 
-<section>
-    <h2>About Us</h2>
-    <p>At Projectify Zone, we are specialize in assisting college students to
-       transform their project ideas into real-life applications at reasonable
-       prices. Our dedicated team is committed to providing the necessary
-       support and resources to ensure your project's success.</p>
-</section>
+    <div class="col">
+      <strong>Important links</strong>
+      <ul style="list-style:none;padding-left:0;margin-top:8px">
+        <li style="margin-bottom:6px"><a href="#services">Services</a></li>
+        <li style="margin-bottom:6px"><a href="#guides">Guides</a></li>
+        <li style="margin-bottom:6px"><a href="#register">Register</a></li>
+      </ul>
+    </div>
 
-<section>
-    <h2>We Are Specialized In</h2>
-    <ul>
-        <li>Custom Electronics & IoT Solutions</li>
-        <li>Embedded System Development</li>
-        <li>Software & App Development</li>
-        <li>Automation and Robotics</li>
-    </ul>
-</section>
+    <div class="col">
+      <strong>Contact</strong>
+      <div style="margin-top:8px" class="small">
+        Email: <a href="mailto:projectifyzone@gmail.com">projectifyzone@gmail.com</a><br>
+        Phone: +91 9986652218
+      </div>
+    </div>
 
-<section>
-    <h2>Features of Projectify Zone</h2>
-    <ul>
-        <li>Innovative approach to every project</li>
-        <li>Expert engineering and design team</li>
-        <li>Customer-focused development</li>
-        <li>Timely delivery with quality assurance</li>
-    </ul>
-</section>
+    <div style="width:100%;margin-top:18px" class="small" aria-hidden="false">
+      &copy; 2025 Projectify Zone. All rights reserved.
+    </div>
+  </footer>
 
-<section>
-    <h2>Registration</h2>
-    <p>Be part of the innovation movement. Register today and start your journey with Projectify Zone.</p>
-    <a href="https://forms.gle/QDNKKc8QvhYjbJha7" class="btn">Register Now</a>
-    <p style="margin-top:20px; font-style:italic; color:#ff00a8;">"Innovation starts with a single click – Let's build the future together!"</p>
-</section>
+  <script>
+    /* === subtle starfield === */
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [], count = Math.max(Math.floor(window.innerWidth / 10), 120);
 
-<section>
-    <h2>Contact Us</h2>
-    <p>Email: <a style="color:#00e5ff;"> projectifyzone@gmail.com </a></p>
-    <p>Phone: <a style="color:#00e5ff;"> +91 9986652218 </a></p>
-    <p>Address: <a style="color:#00e5ff;"> Bengaluru, Karnataka</p>
-</section>
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
 
-<footer>
-    &copy; 2025 Projectify Zone. All Rights Reserved.
-</footer>
+    function initStars() {
+      stars = [];
+      for (let i=0;i<count;i++){
+        stars.push({
+          x: Math.random()*canvas.width,
+          y: Math.random()*canvas.height,
+          r: Math.random()*1.2,
+          v: 0.2 + Math.random()*0.6
+        });
+      }
+    }
+    initStars();
 
-<script>
-/* === STARFIELD ANIMATION === */
-const canvas = document.getElementById('stars');
-const ctx = canvas.getContext('2d');
-let stars = [], count = 200;
-
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
-
-for (let i = 0; i < count; i++) {
-    stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.5,
-        d: Math.random() * count
-    });
-}
-
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    for (let i = 0; i < count; i++) {
-        let s = stars[i];
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.beginPath();
+      for(let s of stars){
         ctx.moveTo(s.x, s.y);
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      }
+      ctx.fill();
+      update();
     }
-    ctx.fill();
-    update();
-}
-
-let angle = 0;
-function update() {
-    angle += 0.01;
-    for (let i = 0; i < count; i++) {
-        let s = stars[i];
-        s.y += Math.cos(angle + s.d) + 1;
-        s.x += Math.sin(angle) * 0.5;
-
-        if (s.x > canvas.width + 5 || s.x < -5 || s.y > canvas.height) {
-            stars[i] = {x: Math.random() * canvas.width, y: -10, r: s.r, d: s.d};
-        }
+    function update(){
+      for(let s of stars){
+        s.y += s.v;
+        if(s.y>canvas.height+2){ s.y = -2; s.x = Math.random()*canvas.width; }
+      }
     }
-}
+    setInterval(draw, 60);
 
-setInterval(draw, 33);
-</script>
+    /* production note:
+       - Replace YOUR_FORMSPREE_ENDPOINT with your actual form endpoint (Formspree or other).
+       - For GitHub Pages without a form backend, you can use Formspree or the 'mailto:' fallback.
+       - If you'd like, I can switch the form to use a static JSON + Netlify Forms or show how to wire a Google Forms embed instead.
+    */
+  </script>
 </body>
 </html>
