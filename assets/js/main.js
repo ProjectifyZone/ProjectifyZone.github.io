@@ -26,8 +26,8 @@ const introInterval = setInterval(() => {
         setTimeout(() => overlay.style.display = 'none', 800);
       }, 1000);
     }
-  }, 200);
-}, 600);
+  }, 600);
+}, 1200);
 
 /* --- 2. CURSOR LOGIC --- */
 const cursor = document.getElementById('cursor');
